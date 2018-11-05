@@ -124,7 +124,7 @@ module Textacular
   def assemble_query(similarities, conditions, exclusive)
     select(Arel.sql("#{quoted_table_name + '.*,' if select_values.empty?} #{similarities.join(" + ")}")).
       where(conditions.join(exclusive ? " AND " : " OR ")).
-      order("#{similarities.join(" + ")} DESC")
+      order(Arel.sql("#{similarities.join(" + ")} DESC"))
   end
 
   def select_values
