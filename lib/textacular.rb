@@ -120,12 +120,11 @@ module Textacular
     "(#{table_name}.#{column}::text % #{search_term})"
   end
 
+  # https://github.com/textacular/textacular/issues/87
   def assemble_query(similarities, conditions, exclusive)
-    rank = connection.quote_column_name('rank' + rand(100000000000000000).to_s)
-
-    select(Arel.sql("#{quoted_table_name + '.*,' if select_values.empty?} #{similarities.join(" + ")} AS #{rank}")).
+    select("#{quoted_table_name + '.*,' if select_values.empty?} #{similarities.join(" + ")}").
       where(conditions.join(exclusive ? " AND " : " OR ")).
-      order(Arel.sql("#{rank} DESC"))
+      order("#{similarities.join(" + ")} DESC")
   end
 
   def select_values
